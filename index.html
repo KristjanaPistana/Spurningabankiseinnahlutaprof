@@ -1,1376 +1,461 @@
-import React, { useState } from 'react';
-import { CheckCircle, XCircle, RefreshCw } from 'lucide-react';
-
-const QuizApp = () => {
-  const questions = [
-    {
-      id: 1,
-      category: "5. kafli - Minnið",
-      question: "Hvað er knippi (chunk) í minni?",
-      options: [
-        "Þegar upplýsingar eru settar saman þannig að hvert atriði innihaldi meiri upplýsingar",
-        "Þegar upplýsingar eru aðskildar í minni",
-        "Þegar upplýsingar glatast",
-        "Þegar upplýsingar endurtaka sig"
-      ],
-      correct: 0
-    },
-    {
-      id: 2,
-      category: "5. kafli - Minnið",
-      question: "Er hægt að fjölga atriðum í skammtímaminni?",
-      options: [
-        "Já, auðveldlega",
-        "Nei, en við getum stækkað þau með knippi",
-        "Já, með þjálfun",
-        "Nei, aldrei"
-      ],
-      correct: 1
-    },
-    {
-      id: 3,
-      category: "5. kafli - Minnið",
-      question: "Á hvaða formi eru upplýsingar skráðar í skynminni?",
-      options: [
-        "Alltaf á sjónrænu formi",
-        "Á sama formi og þær berast",
-        "Alltaf sem hljóð",
-        "Sem lykt"
-      ],
-      correct: 1
-    },
-    {
-      id: 4,
-      category: "5. kafli - Minnið",
-      question: "Hvað þurrkar út fyrri upplýsingar í skynminni?",
-      options: [
-        "Tími",
-        "Gleymska",
-        "Nýjar upplýsingar á sama formi",
-        "Streita"
-      ],
-      correct: 2
-    },
-    {
-      id: 5,
-      category: "5. kafli - Minnið",
-      question: "Hvað þýðir orðið 'Hagurbal'?",
-      options: [
-        "Gaman",
-        "Andúð, óbeit, ógeð",
-        "Gleði",
-        "Hamingja"
-      ],
-      correct: 1
-    },
-    {
-      id: 6,
-      category: "5. kafli - Minnið",
-      question: "Af hverju er erfitt að muna orðið 'Hagurbal'?",
-      options: [
-        "Það er of langt",
-        "Það er nánast útdautt, aldrei notað, ótengt öðrum og nánast enginn skilur það",
-        "Það er á erlendu máli",
-        "Það er of stutt"
-      ],
-      correct: 1
-    },
-    {
-      id: 7,
-      category: "5. kafli - Minnið",
-      question: "Hvað er ástandsbendi?",
-      options: [
-        "Þegar aðstæður hjálpa við minnisvinnslu",
-        "Þegar tilfinningalegt ástand hjálpar við að rifja upp minningar í samræmi við skap okkar",
-        "Þegar tími hjálpar við minnisvinnslu",
-        "Þegar lykt hjálpar við minnisvinnslu"
-      ],
-      correct: 1
-    },
-    {
-      id: 8,
-      category: "5. kafli - Minnið",
-      question: "Hvað er aðstæðubendi?",
-      options: [
-        "Þegar tilfinningar hjálpa við minnisvinnslu",
-        "Þegar aðstæður eða umhverfi hjálpa við að rifja upp minningar",
-        "Þegar tími hjálpar við minnisvinnslu",
-        "Þegar hljóð hjálpar við minnisvinnslu"
-      ],
-      correct: 1
-    },
-    {
-      id: 9,
-      category: "5. kafli - Minnið",
-      question: "Hvað er afturvirk hömlun (retroactive interference)?",
-      options: [
-        "Truflun á upprifjun á því sem við kunnum",
-        "Truflun á skráningu á nýju efni",
-        "Þegar við munum allt",
-        "Þegar við gleyma öllu"
-      ],
-      correct: 0
-    },
-    {
-      id: 10,
-      category: "5. kafli - Minnið",
-      question: "Hvað er dæmi um afturvirka hömlun?",
-      options: [
-        "Að læra nýja leið í skólann",
-        "Tungubroddsfyrirbrigðið - þegar við gleymum einhverju á prófi en vitum það samt eftir prófið",
-        "Að muna allt",
-        "Að gleyma öllu"
-      ],
-      correct: 1
-    },
-    {
-      id: 11,
-      category: "5. kafli - Minnið",
-      question: "Hvað er framvirk hömlun (proactive interference)?",
-      options: [
-        "Truflun á upprifjun á því sem við kunnum",
-        "Truflun á skráningu á nýju efni",
-        "Þegar við munum allt",
-        "Þegar við gleyma öllu"
-      ],
-      correct: 1
-    },
-    {
-      id: 12,
-      category: "5. kafli - Minnið",
-      question: "Hvað er dæmi um framvirka hömlun?",
-      options: [
-        "Tungubroddsfyrirbrigðið",
-        "Fara óvart alltaf gömlu leiðina í skólann þótt þú vitir að þú komist aðra",
-        "Að muna allt",
-        "Að gleyma öllu"
-      ],
-      correct: 1
-    },
-    {
-      id: 13,
-      category: "5. kafli - Minnið",
-      question: "Hvernig getum við notfært okkur þekkingu á afturvirkri hömlun?",
-      options: [
-        "Með því að læra allt í einu",
-        "Með því að aðgreina nýtt efni frá því sem þú kannt fyrir til að geta betur munað það",
-        "Með því að læra ekkert",
-        "Með því að sofa"
-      ],
-      correct: 1
-    },
-    {
-      id: 14,
-      category: "5. kafli - Minnið",
-      question: "Hvað er leifturminni (flashbulb memory)?",
-      options: [
-        "Venjuleg minning",
-        "Sérstaklega skýr, nákvæm og langvarandi minning um atburð sem var óvenjulega mikilvægur, tilfinningaþrunginn, óvæntur og fyrirvaralaus",
-        "Óskýr minning",
-        "Stutt minning"
-      ],
-      correct: 1
-    },
-    {
-      id: 15,
-      category: "5. kafli - Minnið",
-      question: "Hvernig hafa tilfinningar áhrif á minni?",
-      options: [
-        "Við munum betur efni sem er í samræmi við skap okkar",
-        "Tilfinningar hafa engin áhrif á minni",
-        "Við munum verr þegar við erum glöð",
-        "Við munum alltaf jafn vel"
-      ],
-      correct: 0
-    },
-    {
-      id: 16,
-      category: "5. kafli - Minnið",
-      question: "Hvað gerist þegar þunglyndir reyna að rifja upp minningar?",
-      options: [
-        "Þeir muna bara gleðilegar minningar",
-        "Þeir hafa tilhneigingu til að rifja upp neikvæða atburði",
-        "Þeir muna ekkert",
-        "Þeir muna allt"
-      ],
-      correct: 1
-    },
-    {
-      id: 17,
-      category: "5. kafli - Minnið",
-      question: "Hver er fyrsta minnisaðferðin sem mælt er með?",
-      options: [
-        "Læra á síðustu stundu",
-        "Reyndu að finna leið til að vekja áhuga þinn á efninu",
-        "Læra allt utanbókar",
-        "Horfa bara á myndir"
-      ],
-      correct: 1
-    },
-    {
-      id: 18,
-      category: "5. kafli - Minnið",
-      question: "Hvernig getum við tengt efni við áhugamál?",
-      options: [
-        "Með því að hunsa áhugamálin",
-        "Með því að tengja efni við áhugamál eða hugsa hlutina út frá þeim sviðum sem okkur þykja skemmtileg",
-        "Með því að læra bara utanbókar",
-        "Með því að gleyma áhugamálunum"
-      ],
-      correct: 1
-    },
-    {
-      id: 19,
-      category: "5. kafli - Minnið",
-      question: "Hvað er frumhrif?",
-      options: [
-        "Þegar við munum miðjan hluta upplýsinga",
-        "Þegar við munum fyrstu upplýsingarnar betur",
-        "Þegar við munum ekkert",
-        "Þegar við gleyma öllu"
-      ],
-      correct: 1
-    },
-    {
-      id: 20,
-      category: "5. kafli - Minnið",
-      question: "Hvað er nándarhrif?",
-      options: [
-        "Þegar við munum miðjan hluta upplýsinga",
-        "Þegar við munum síðustu upplýsingarnar betur",
-        "Þegar við munum ekkert",
-        "Þegar við gleyma öllu"
-      ],
-      correct: 1
-    },
-    {
-      id: 21,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er frumbreyta (independent variable)?",
-      options: [
-        "Það sem við mælum",
-        "Eitthvað sem við viljum stjórna, eða skipta í hópa eftir",
-        "Niðurstaða rannsóknar",
-        "Slembiúrtak"
-      ],
-      correct: 1
-    },
-    {
-      id: 22,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er fylgibreyta (dependent variable)?",
-      options: [
-        "Það sem við stjórnum",
-        "Það sem við mælum, niðurstaðan",
-        "Úrtakið",
-        "Tilgátan"
-      ],
-      correct: 1
-    },
-    {
-      id: 23,
-      category: "6. kafli - Rannsóknir",
-      question: "Í rannsókninni 'Hefur hreyfing áhrif á heilsu fólks?' - hvað er frumbreytan?",
-      options: [
-        "Heilsa",
-        "Hreyfing",
-        "Fólkið",
-        "Tíminn"
-      ],
-      correct: 1
-    },
-    {
-      id: 24,
-      category: "6. kafli - Rannsóknir",
-      question: "Í rannsókninni 'Hefur hreyfing áhrif á heilsu fólks?' - hvað er fylgibreytan?",
-      options: [
-        "Heilsa",
-        "Hreyfing",
-        "Fólkið",
-        "Tíminn"
-      ],
-      correct: 0
-    },
-    {
-      id: 25,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er tilraunahópur?",
-      options: [
-        "Hópur sem fær ekki inngrip",
-        "Hópur sem fær inngrip",
-        "Allir þátttakendur",
-        "Rannsakendurnir"
-      ],
-      correct: 1
-    },
-    {
-      id: 26,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er samanburðarhópur?",
-      options: [
-        "Hópur sem fær inngrip",
-        "Hópur sem fær ekki inngrip (til samanburðar)",
-        "Allir þátttakendur",
-        "Rannsakendurnir"
-      ],
-      correct: 1
-    },
-    {
-      id: 27,
-      category: "6. kafli - Rannsóknir",
-      question: "Hver er ein algengasta rannsóknaraðferðin í sálfræði í dag?",
-      options: [
-        "Tilraunir",
-        "Vettvangsathuganir",
-        "Kannanir (surveys)",
-        "Einsögur"
-      ],
-      correct: 2
-    },
-    {
-      id: 28,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað eru kannanir notaðar til?",
-      options: [
-        "Til að framkvæma tilraunir",
-        "Til að leggja spurningarkannanir fyrir þátttakendur",
-        "Til að skoða dýr",
-        "Til að lesa bækur"
-      ],
-      correct: 1
-    },
-    {
-      id: 29,
-      category: "6. kafli - Rannsóknir",
-      question: "Hversu margar helstu rannsóknaraðferðir eru í sálfræði?",
-      options: [
-        "Þrjár",
-        "Fjórar",
-        "Fimm",
-        "Sex"
-      ],
-      correct: 2
-    },
-    {
-      id: 30,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað eru fimm helstu rannsóknaraðferðirnar?",
-      options: [
-        "Tilraunir, vettvangsathuganir, einsögur, kannanir, fylgnirannsóknir",
-        "Bara tilraunir",
-        "Bara kannanir",
-        "Bara vettvangsathuganir"
-      ],
-      correct: 0
-    },
-    {
-      id: 31,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er lyfleysuáhrif (placebo effect)?",
-      options: [
-        "Þegar lyf virka ekki",
-        "Þegar fólk upplifir áhrif af lyfjum sem það heldur að það taki þótt það sé að taka sykurpillu",
-        "Þegar lyf virka alltaf",
-        "Þegar enginn tekur lyf"
-      ],
-      correct: 1
-    },
-    {
-      id: 32,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er blind rannsókn (blind experiment)?",
-      options: [
-        "Rannsókn þar sem allir vita allt",
-        "Rannsókn þar sem þátttakendur vita ekki hvað er verið að mæla",
-        "Rannsókn þar sem enginn veit neitt",
-        "Rannsókn þar sem bara rannsakendur vita allt"
-      ],
-      correct: 1
-    },
-    {
-      id: 33,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er Hawthorne-áhrif?",
-      options: [
-        "Fólk breytir ekki hegðun sinni",
-        "Fólk breytir hegðun sinni við það eitt að það er verið að fylgjast með því",
-        "Fólk hættir að hegða sér",
-        "Fólk verður óbreytanlegt"
-      ],
-      correct: 1
-    },
-    {
-      id: 34,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er dæmi um Hawthorne-áhrif?",
-      options: [
-        "Þegar börn breyta hegðun þegar gestir koma",
-        "Þegar börn sofa",
-        "Þegar börn éta",
-        "Þegar börn eru ein"
-      ],
-      correct: 0
-    },
-    {
-      id: 35,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er tölfræði notuð til í sálfræði?",
-      options: [
-        "Bara til að telja",
-        "Til að taka saman gögn, bera saman hópa, ákvarða tengsl og spá fyrir um hegðun",
-        "Bara til að gera próf",
-        "Ekkert"
-      ],
-      correct: 1
-    },
-    {
-      id: 36,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er lýsandi tölfræði?",
-      options: [
-        "Tölfræði sem lýsir bara einum hlut",
-        "Tölfræði sem birtir okkur gögn á sjónrænan hátt sem við eigum auðveldara með að skilja",
-        "Tölfræði sem segir okkur ekkert",
-        "Tölfræði sem er bara í ritgerðum"
-      ],
-      correct: 1
-    },
-    {
-      id: 37,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er ályktunartölfræði?",
-      options: [
-        "Tölfræði sem segir okkur bara hluti",
-        "Tölfræði sem hjálpar okkur að draga ályktanir um þýði út frá úrtaki",
-        "Tölfræði sem er alltaf röng",
-        "Tölfræði sem enginn notar"
-      ],
-      correct: 1
-    },
-    {
-      id: 38,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er meðaltal í tölfræði?",
-      options: [
-        "Hæsta gildið",
-        "Lægsta gildið",
-        "Summan af öllum gildum deilt með fjölda gilda",
-        "Miðgildið"
-      ],
-      correct: 2
-    },
-    {
-      id: 39,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er staðalfrávik?",
-      options: [
-        "Mælikvarði á dreifingu gagna frá meðaltali",
-        "Meðaltalið",
-        "Hæsta gildið",
-        "Lægsta gildið"
-      ],
-      correct: 0
-    },
-    {
-      id: 40,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað segir normalkúrfa okkur?",
-      options: [
-        "Ekkert",
-        "Hvernig gögn dreifast í kringum meðaltal",
-        "Bara hæsta gildið",
-        "Bara lægsta gildið"
-      ],
-      correct: 1
-    },
-    {
-      id: 41,
-      category: "6. kafli - Rannsóknir",
-      question: "Ef þú tekur próf og færð 7,5 og meðaltal er 7,0 með staðalfrávik 0,5, hvar ertu?",
-      options: [
-        "Langt undir meðaltali",
-        "Rétt yfir meðaltali",
-        "Langt yfir meðaltali",
-        "Á meðaltali"
-      ],
-      correct: 1
-    },
-    {
-      id: 42,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er marktektarpróf?",
-      options: [
-        "Próf sem nemendur taka",
-        "Tölfræðilegt próf sem skoðar hvort munur milli hópa sé raunverulegur eða tilviljun",
-        "Próf sem segir okkur ekkert",
-        "Próf sem allir falla á"
-      ],
-      correct: 1
-    },
-    {
-      id: 43,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað þýðir það að niðurstaða sé 'marktæk'?",
-      options: [
-        "Að niðurstaðan sé tilviljun",
-        "Að niðurstaðan sé raunveruleg og ekki bara tilviljun",
-        "Að niðurstaðan skipti ekki máli",
-        "Að niðurstaðan sé röng"
-      ],
-      correct: 1
-    },
-    {
-      id: 44,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er blekkingaaðferð (deception) í rannsóknum?",
-      options: [
-        "Þegar þátttakendur vita allt",
-        "Þegar þátttakendur eru ekki sagðar allar upplýsingar um rannsóknina fyrirfram",
-        "Þegar allir segja satt",
-        "Þegar enginn lygar"
-      ],
-      correct: 1
-    },
-    {
-      id: 45,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað er ritrýning (peer review)?",
-      options: [
-        "Þegar vinir lesa rannsókn",
-        "Þegar sérfræðingar í faginu fara yfir rannsókn áður en hún er birt",
-        "Þegar enginn les rannsóknina",
-        "Þegar allir lesa rannsóknina"
-      ],
-      correct: 1
-    },
-    {
-      id: 46,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvers vegna er ritrýning mikilvæg?",
-      options: [
-        "Til að gera rannsóknina lengri",
-        "Til að fullvissa rannsakanda og lesendur að rannsóknin sé rétt gerð",
-        "Til að tefja rannsóknina",
-        "Til að gera rannsóknina skemmtilegri"
-      ],
-      correct: 1
-    },
-    {
-      id: 47,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvað eru fimm atriðin í mati á rannsókn?",
-      options: [
-        "Tilgangur, aðferð, þátttakendur, endurtekning, ályktanir",
-        "Bara tilgangur",
-        "Bara niðurstöður",
-        "Bara þátttakendur"
-      ],
-      correct: 0
-    },
-    {
-      id: 48,
-      category: "6. kafli - Rannsóknir",
-      question: "Af hverju er mikilvægt að skoða aðferð rannsóknar?",
-      options: [
-        "Til að vita hvort rannsóknin hafi verið rétt framkvæmd",
-        "Bara til að vita hver gerði hana",
-        "Til að vita hvað kostnaði",
-        "Til að vita hvar hún var gerð"
-      ],
-      correct: 0
-    },
-    {
-      id: 49,
-      category: "6. kafli - Rannsóknir",
-      question: "Af hverju skiptir endurtekning máli í rannsóknum?",
-      options: [
-        "Til að vita hvort niðurstöður séu áreiðanlegar",
-        "Bara til að eyða tíma",
-        "Til að gera rannsóknina dýrari",
-        "Til að gera rannsóknina lengri"
-      ],
-      correct: 0
-    },
-    {
-      id: 50,
-      category: "6. kafli - Rannsóknir",
-      question: "Hvar færð þú upplýsingar þínar um vísindarannsóknir?",
-      options: [
-        "Alltaf beint úr vísindagreinum",
-        "Oft af frétta- eða samfélagsmiðlum",
-        "Aldrei",
-        "Alltaf frá kennurum"
-      ],
-      correct: 1
-    },
-    {
-      id: 51,
-      category: "6. kafli - Rannsóknir",
-      question: "Hver velur hvaða upplýsingar þú sérð á fréttamiðlum?",
-      options: [
-        "Þú velur alltaf sjálf/ur",
-        "Ritstjórar og blaðamenn velja hvað birtist",
-        "Enginn velur",
-        "Allir velja"
-      ],
-      correct: 1
-    },
-    {
-      id: 52,
-      category: "6. kafli - Rannsóknir",
-      question: "Er alltaf rétt sagt frá rannsóknum á fréttamiðlum?",
-      options: [
-        "Já, alltaf",
-        "Nei, stundum er rannsóknunum breytt eða of einfölduð",
-        "Alltaf rangt",
-        "Aldrei rangt"
-      ],
-      correct: 1
-    },
-    {
-      id: 53,
-      category: "7. kafli - Félagssálfræði",
-      question: "Í hvað má skipta viðfangsefnum sálfræðinnar gróflega?",
-      options: [
-        "Hegðun, hugsun, tilfinningar, sjálfsmynd",
-        "Bara hegðun",
-        "Bara tilfinningar",
-        "Bara sjálfsmynd"
-      ],
-      correct: 0
-    },
-    {
-      id: 54,
-      category: "7. kafli - Félagssálfræði",
-      question: "Hvað má segja að sjálfsmyndin sé?",
-      options: [
-        "Bara hegðun",
-        "Sambland af hegðun, hugsun og tilfinningum",
-        "Bara tilfinningar",
-        "Bara hugsun"
-      ],
-      correct: 1
-    },
-    {
-      id: 55,
-      category: "7. kafli - Félagssálfræði",
-      question: "Hvað er félagslegur samanburður?",
-      options: [
-        "Þegar við berum okkur saman við aðra",
-        "Þegar við berum okkur aldrei saman",
-        "Þegar við hugsum bara um okkur sjálf",
-        "Þegar við hugsum aldrei um aðra"
-      ],
-      correct: 0
-    },
-    {
-      id: 56,
-      category: "7. kafli - Félagssálfræði",
-      question: "Er félagslegur samanburður algildur?",
-      options: [
-        "Nei, bara á Íslandi",
-        "Já, við eigum öll líka til að bera okkur saman við þá sem gengur vel til að lyfta okkur upp",
-        "Nei, aldrei",
-        "Bara hjá fullorðnum"
-      ],
-      correct: 1
-    },
-    {
-      id: 57,
-      category: "7. kafli - Félagssálfræði",
-      question: "Hvenær byrja börn að bera sig saman við aðra?",
-      options: [
-        "Aldrei",
-        "Eftir sýndarnáminu/félagsnámi Bandura",
-        "Bara fullorðin",
-        "Eftir 20 ára aldur"
-      ],
-      correct: 1
-    },
-    {
-      id: 58,
-      category: "Ýmislegt",
-      question: "Hvað er knippi í sálfræði?",
-      options: [
-        "Þegar upplýsingar eru sameinaðar í stærri einingar",
-        "Þegar upplýsingar eru aðskildar",
-        "Þegar upplýsingar glatast",
-        "Þegar upplýsingar eru óskýrar"
-      ],
-      correct: 0
-    },
-    {
-      id: 59,
-      category: "Ýmislegt",
-      question: "Hvernig getum við aðgrennt nýtt efni til að muna betur?",
-      options: [
-        "Með því að læra allt eins",
-        "Með því að nota mismunandi liti, teikna myndir eða læra á mismunandi hátt",
-        "Með því að læra ekkert",
-        "Með því að gleyma gömlu efni"
-      ],
-      correct: 1
-    },
-    {
-      id: 60,
-      category: "Ýmislegt",
-      question: "Hvað er ágætt dæmi um notkun aðstæðubenda?",
-      options: [
-        "Að fara aftur í herbergið sem þú varst í til að rifja upp hvað þú ættir að gera",
-        "Að vera alltaf á sama stað",
-        "Að gleyma öllu",
-        "Að læra aldrei"
-      ],
-      correct: 0
-    },
-    {
-      id: 61,
-      category: "Ýmislegt",
-      question: "Hvað skiptir máli í minnisaðferðum?",
-      options: [
-        "Að finna leið til að vekja áhuga þinn á efninu",
-        "Að læra bara utanbókar",
-        "Að læra aldrei",
-        "Að gleyma öllu"
-      ],
-      correct: 0
-    },
-    {
-      id: 62,
-      category: "Ýmislegt",
-      question: "Hvað er mikilvægt þegar við lærum atferlisfræði?",
-      options: [
-        "Að læra bara utanbókar",
-        "Að tengja efnið við áhugamál okkar, t.d. þjálfun hunda",
-        "Að læra aldrei",
-        "Að gleyma öllu"
-      ],
-      correct: 1
-    },
-    {
-      id: 63,
-      category: "Ýmislegt",
-      question: "Hvað gerist ef við hlustum á fyrirlestur en erum að skrolla í gegnum Instagram?",
-      options: [
-        "Við munum betur",
-        "Afturvirk hömlun - það sem við lesum í símanum hamlar skráningu á því sem kennarinn sagði",
-        "Við munum allt",
-        "Ekkert gerist"
-      ],
-      correct: 1
-    },
-    {
-      id: 64,
-      category: "Ýmislegt",
-      question: "Hvað þýðir það að þunglyndir hafi tilhneigingu til að rifja upp neikvæða atburði?",
-      options: [
-        "Það er dæmi um ástandsbenda",
-        "Það er dæmi um aðstæðubenda",
-        "Það er engin tenging",
-        "Það er óeðlilegt"
-      ],
-      correct: 0
-    },
-    {
-      id: 65,
-      category: "Ýmislegt",
-      question: "Hvað er dæmi um lýðfræðilegar frumbreytur?",
-      options: [
-        "Tónlist, lit, bragð",
-        "Kyn, búseta, kynþáttur, menntun, staða á vinnumarkaði",
-        "Veður, tími, dagur",
-        "Lykt, hljóð, snerting"
-      ],
-      correct: 1
-    },
-    {
-      id: 66,
-      category: "Ýmislegt",
-      question: "Í rannsókninni 'Hefur tónlist truflandi áhrif á lesskilning barna?' - hvað er frumbreytan?",
-      options: [
-        "Lesskilningur",
-        "Tónlist (hár tónlist eða engin tónlist)",
-        "Börnin",
-        "Tíminn"
-      ],
-      correct: 1
-    },
-    {
-      id: 67,
-      category: "Ýmislegt",
-      question: "Í rannsókninni 'Er hamingja mismunandi eftir kynjum?' - hvað er frumbreytan?",
-      options: [
-        "Hamingja",
-        "Kyn",
-        "Fólkið",
-        "Tíminn"
-      ],
-      correct: 1
-    },
-    {
-      id: 68,
-      category: "Ýmislegt",
-      question: "Í rannsókninni 'Hefur hugræn atferlismeðferð áhrif á prófkvíða?' - hvað er fylgibreytan?",
-      options: [
-        "Hugræn atferlismeðferð",
-        "Prófkvíði",
-        "Nemendurnir",
-        "Tíminn"
-      ],
-      correct: 1
-    },
-    {
-      id: 69,
-      category: "Ýmislegt",
-      question: "Hvað gerist í tilgátunni 'líkamsrækt bætir geðheilsu'?",
-      options: [
-        "Líkamsrækt er fylgibreytan",
-        "Líkamsrækt er frumbreytan og geðheilsa er fylgibreytan",
-        "Geðheilsa er frumbreytan",
-        "Það eru engar breytur"
-      ],
-      correct: 1
-    },
-    {
-      id: 70,
-      category: "Ýmislegt",
-      question: "Hvað er úrtak í rannsókn?",
-      options: [
-        "Allir sem eru til",
-        "Hópur einstaklinga sem tekin eru úr stærra þýði",
-        "Bara einn einstaklingur",
-        "Rannsakendurnir"
-      ],
-      correct: 1
-    },
-    {
-      id: 71,
-      category: "Ýmislegt",
-      question: "Hvað er þýði í rannsókn?",
-      options: [
-        "Bara úrtakið",
-        "Allir einstaklingarnir sem rannsóknin á við um",
-        "Bara rannsakendurnir",
-        "Bara einn hópur"
-      ],
-      correct: 1
-    },
-    {
-      id: 72,
-      category: "Ýmislegt",
-      question: "Hvað eru eigindlegar rannsóknir?",
-      options: [
-        "Rannsóknir sem nota bara tölur",
-        "Rannsóknir sem nota orð, lýsingar og dýpra skilning",
-        "Rannsóknir sem nota bara myndir",
-        "Rannsóknir sem nota engar upplýsingar"
-      ],
-      correct: 1
-    },
-    {
-      id: 73,
-      category: "Ýmislegt",
-      question: "Hvað eru megindlegar rannsóknir?",
-      options: [
-        "Rannsóknir sem nota bara orð",
-        "Rannsóknir sem nota tölur og tölfræði",
-        "Rannsóknir sem nota bara myndir",
-        "Rannsóknir sem nota engar upplýsingar"
-      ],
-      correct: 1
-    },
-    {
-      id: 74,
-      category: "Ýmislegt",
-      question: "Hvað er kenning í vísindum?",
-      options: [
-        "Sama og tilgáta",
-        "Skýring á fyrirbærum sem er studd af mörgum rannsóknum",
-        "Bara ágiskun",
-        "Alltaf röng"
-      ],
-      correct: 1
-    },
-    {
-      id: 75,
-      category: "Ýmislegt",
-      question: "Hvað er tilgáta í vísindum?",
-      options: [
-        "Sama og kenning",
-        "Tilraun til að spá fyrir um niðurstöður rannsóknar",
-        "Alltaf sönn",
-        "Alltaf röng"
-      ],
-      correct: 1
-    },
-    {
-      id: 76,
-      category: "Ýmislegt",
-      question: "Hvað þarf að gera til að staðfesta kenningar?",
-      options: [
-        "Bara eina rannsókn",
-        "Margar rannsóknir sem styðja sömu niðurstöðu",
-        "Engar rannsóknir",
-        "Bara að hugsa um það"
-      ],
-      correct: 1
-    },
-    {
-      id: 77,
-      category: "Ýmislegt",
-      question: "Hvað er vettvangsathugun?",
-      options: [
-        "Að skoða í rannsóknarstofu",
-        "Að skoða hegðun í náttúrulegu umhverfi",
-        "Að lesa um það",
-        "Að hugsa um það"
-      ],
-      correct: 1
-    },
-    {
-      id: 78,
-      category: "Ýmislegt",
-      question: "Hvað er einsaga í rannsóknum?",
-      options: [
-        "Rannsókn á mörgum einstaklingum",
-        "Ítarleg rannsókn á einum einstaklingi",
-        "Rannsókn á dýrum",
-        "Rannsókn á bókum"
-      ],
-      correct: 1
-    },
-    {
-      id: 79,
-      category: "Ýmislegt",
-      question: "Hvað er fylgnirannsókn?",
-      options: [
-        "Rannsókn sem skoðar hvort tvær breytur séu tengdar",
-        "Rannsókn sem skoðar bara eina breytu",
-        "Rannsókn sem skoðar engar breytur",
-        "Rannsókn sem skoðar bara tíma"
-      ],
-      correct: 0
-    },
-    {
-      id: 80,
-      category: "Ýmislegt",
-      question: "Þýðir fylgni orsakasamband?",
-      options: [
-        "Já, alltaf",
-        "Nei, fylgni þýðir ekki endilega orsakasamband",
-        "Stundum",
-        "Aldrei"
-      ],
-      correct: 1
-    },
-    {
-      id: 81,
-      category: "Ýmislegt",
-      question: "Hvað er best til að sýna orsakasamband?",
-      options: [
-        "Fylgnirannsókn",
-        "Tilraun með tilraunahóp og samanburðarhóp",
-        "Vettvangsathugun",
-        "Einsaga"
-      ],
-      correct: 1
-    },
-    {
-      id: 82,
-      category: "Ýmislegt",
-      question: "Hvað þýðir vísindaleg aðferð?",
-      options: [
-        "Að gera rannsóknir á handahófskenndan hátt",
-        "Kerfisbundin aðferð til að afla þekkingar með athugun og tilraunum",
-        "Að giska bara",
-        "Að lesa bara bækur"
-      ],
-      correct: 1
-    },
-    {
-      id: 83,
-      category: "Ýmislegt",
-      question: "Hvað er skimunarkanna?",
-      options: [
-        "Kanna sem skoðar allt",
-        "Kanna til að greina áhættuþætti eða vandamál",
-        "Kanna sem skoðar ekkert",
-        "Kanna sem er alltaf röng"
-      ],
-      correct: 1
-    },
-    {
-      id: 84,
-      category: "Ýmislegt",
-      question: "Hvað þarf að vera til staðar í blindri rannsókn?",
-      options: [
-        "Að allir vita allt",
-        "Að þátttakendur viti ekki hvort þeir eru í tilraunahóp eða samanburðarhóp",
-        "Að enginn viti neitt",
-        "Að bara rannsakendur viti allt"
-      ],
-      correct: 1
-    },
-    {
-      id: 85,
-      category: "Ýmislegt",
-      question: "Hvað er best að gera til að komast hjá Hawthorne-áhrifum?",
-      options: [
-        "Segja öllum að þeir séu skoðaðir",
-        "Reyna að framkvæma rannsóknina þannig að þátttakendur viti ekki að þeir eru skoðaðir",
-        "Fylgjast alltaf með öllum",
-        "Aldrei fylgjast með neinum"
-      ],
-      correct: 1
-    },
-    {
-      id: 86,
-      category: "Ýmislegt",
-      question: "Hvað segir lítið staðalfrávik okkur?",
-      options: [
-        "Að gögnin séu mjög dreifð",
-        "Að gögnin séu nálægt meðaltalinu",
-        "Að gögnin séu öll eins",
-        "Að gögnin séu öll mismunandi"
-      ],
-      correct: 1
-    },
-    {
-      id: 87,
-      category: "Ýmislegt",
-      question: "Hvað segir stórt staðalfrávik okkur?",
-      options: [
-        "Að gögnin séu nálægt meðaltalinu",
-        "Að gögnin séu mjög dreifð frá meðaltalinu",
-        "Að gögnin séu öll eins",
-        "Að gögnin séu lítil"
-      ],
-      correct: 1
-    },
-    {
-      id: 88,
-      category: "Ýmislegt",
-      question: "Hvað er hægt að nota til að sjá dreifingu gagna?",
-      options: [
-        "Bara tölur",
-        "Normalkúrvu eða súlurit",
-        "Bara orð",
-        "Engin tæki"
-      ],
-      correct: 1
-    },
-    {
-      id: 89,
-      category: "Ýmislegt",
-      question: "Hvað þarf að gera áður en rannsókn er birt?",
-      options: [
-        "Ekkert",
-        "Ritrýning hjá sérfræðingum",
-        "Bara að skrifa hana",
-        "Bara að hugsa um hana"
-      ],
-      correct: 1
-    },
-    {
-      id: 90,
-      category: "Ýmislegt",
-      question: "Hvað er markmið ritrýningar?",
-      options: [
-        "Að gera rannsóknina lengri",
-        "Að tryggja að rannsóknin uppfylli allar kröfur og sé rétt gerð",
-        "Að tefja útgáfu",
-        "Að gera rannsóknina dýrari"
-      ],
-      correct: 1
-    },
-    {
-      id: 91,
-      category: "Ýmislegt",
-      question: "Hvað eru dýrarannsóknir?",
-      options: [
-        "Rannsóknir á fólki",
-        "Rannsóknir á dýrum til að skilja hegðun og lífeðlisfræði",
-        "Rannsóknir á plöntum",
-        "Rangsóknir á steinum"
-      ],
-      correct: 1
-    },
-    {
-      id: 92,
-      category: "Ýmislegt",
-      question: "Hvað er eitt stærsta siðferðislega álitamálið í sálfræði?",
-      options: [
-        "Að segja alltaf satt",
-        "Notkun blekkinga og dýrarannsóknir",
-        "Að borga vel",
-        "Að nota tölvur"
-      ],
-      correct: 1
-    },
-    {
-      id: 93,
-      category: "Ýmislegt",
-      question: "Hvað þarf að gera eftir að búið er að nota blekkingu í rannsókn?",
-      options: [
-        "Ekkert",
-        "Skýra þátttakendum hvað var verið að rannsaka og af hverju blekking var nauðsynleg",
-        "Halda leyndum",
-        "Segja öllum"
-      ],
-      correct: 1
-    },
-    {
-      id: 94,
-      category: "Ýmislegt",
-      question: "Hvað er ályktun í rannsókn?",
-      options: [
-        "Upphafið",
-        "Niðurstaðan sem rannsakendur draga úr gögnunum",
-        "Tilgátan",
-        "Aðferðin"
-      ],
-      correct: 1
-    },
-    {
-      id: 95,
-      category: "Ýmislegt",
-      question: "Þarf alltaf að geta endurtekið rannsókn?",
-      options: [
-        "Nei, aldrei",
-        "Já, til að staðfesta að niðurstöðurnar séu áreiðanlegar",
-        "Stundum",
-        "Bara ef okkur hentar"
-      ],
-      correct: 1
-    },
-    {
-      id: 96,
-      category: "Ýmislegt",
-      question: "Hvað þýðir það ef rannsókn er ekki endurtekjanleg?",
-      options: [
-        "Að hún sé fullkomin",
-        "Að niðurstöðurnar séu ekki áreiðanlegar",
-        "Að hún sé alltaf sönn",
-        "Að hún skipti ekki máli"
-      ],
-      correct: 1
-    },
-    {
-      id: 97,
-      category: "Ýmislegt",
-      question: "Hvað er mikilvægt þegar við lesum um rannsókn í fjölmiðlum?",
-      options: [
-        "Að trúa öllu",
-        "Að vera gagnrýnir og athuga hvort rétt sé sagt frá rannsókninni",
-        "Að trúa engu",
-        "Að hunsa allt"
-      ],
-      correct: 1
-    },
-    {
-      id: 98,
-      category: "Ýmislegt",
-      question: "Hvað ætti að athuga þegar maður les um rannsókn?",
-      options: [
-        "Bara titilinn",
-        "Tilgang, aðferð, þátttakendur, endurtekningar og ályktanir",
-        "Bara niðurstöðurnar",
-        "Ekkert"
-      ],
-      correct: 1
-    },
-    {
-      id: 99,
-      category: "Ýmislegt",
-      question: "Hvers vegna er tölfræði mikilvæg í sálfræði?",
-      options: [
-        "Til að gera rannsóknir erfiðari",
-        "Til að geta greint gögn, borið saman hópa og dregið áreiðanlegar ályktanir",
-        "Til að rugla fólk",
-        "Til að gera rannsóknir dýrari"
-      ],
-      correct: 1
-    },
-    {
-      id: 100,
-      category: "Ýmislegt",
-      question: "Hvað er helsti munurinn á kenningum og tilgátum?",
-      options: [
-        "Engin munur",
-        "Kenningar eru studdar af mörgum rannsóknum en tilgátur eru tilraunir til að spá fyrir um niðurstöður",
-        "Kenningar eru alltaf rangar",
-        "Tilgátur eru alltaf sannar"
-      ],
-      correct: 1
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sálfræðipróf - 100 Spurningar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
     }
-  ];
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [showResult, setShowResult] = useState(false);
-  const [score, setScore] = useState(0);
-  const [answers, setAnswers] = useState([]);
-
-  const handleAnswer = (index) => {
-    if (selectedAnswer !== null) return;
-    
-    setSelectedAnswer(index);
-    const isCorrect = index === questions[currentQuestion].correct;
-    
-    setAnswers([...answers, {
-      question: currentQuestion,
-      selected: index,
-      correct: questions[currentQuestion].correct,
-      isCorrect
-    }]);
-    
-    if (isCorrect) {
-      setScore(score + 1);
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        padding: 30px;
     }
-  };
 
-  const nextQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
-    } else {
-      setShowResult(true);
+    h1 {
+        color: #667eea;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2em;
     }
-  };
 
-  const resetQuiz = () => {
-    setCurrentQuestion(0);
-    setSelectedAnswer(null);
-    setShowResult(false);
-    setScore(0);
-    setAnswers([]);
-  };
+    .progress-container {
+        margin-bottom: 30px;
+    }
 
-  const getButtonClass = (index) => {
-    if (selectedAnswer === null) {
-      return "bg-white hover:bg-blue-50 border-2 border-gray-300";
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #666;
     }
-    if (index === questions[currentQuestion].correct) {
-      return "bg-green-100 border-2 border-green-500";
-    }
-    if (index === selectedAnswer && index !== questions[currentQuestion].correct) {
-      return "bg-red-100 border-2 border-red-500";
-    }
-    return "bg-gray-100 border-2 border-gray-300";
-  };
 
-  if (showResult) {
-    const percentage = ((score / questions.length) * 100).toFixed(1);
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8">
-          <h1 className="text-3xl font-bold text-center mb-6 text-indigo-900">
-            Niðurstöður
-          </h1>
-          <div className="text-center mb-8">
-            <div className="text-6xl font-bold text-indigo-600 mb-4">
-              {percentage}%
+    .progress-bar {
+        width: 100%;
+        height: 10px;
+        background: #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        transition: width 0.3s ease;
+    }
+
+    .category {
+        display: inline-block;
+        background: #f0f4ff;
+        color: #667eea;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .question {
+        font-size: 1.3em;
+        color: #333;
+        margin-bottom: 25px;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+
+    .options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .option {
+        padding: 18px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: white;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .option:hover:not(.disabled) {
+        border-color: #667eea;
+        background: #f8f9ff;
+        transform: translateX(5px);
+    }
+
+    .option.selected-correct {
+        background: #d4edda;
+        border-color: #28a745;
+    }
+
+    .option.selected-wrong {
+        background: #f8d7da;
+        border-color: #dc3545;
+    }
+
+    .option.correct-answer {
+        background: #d4edda;
+        border-color: #28a745;
+    }
+
+    .option.disabled {
+        cursor: default;
+    }
+
+    .option-letter {
+        font-weight: bold;
+        color: #667eea;
+        min-width: 24px;
+    }
+
+    .option-text {
+        flex: 1;
+        color: #333;
+    }
+
+    .icon {
+        font-size: 24px;
+    }
+
+    .next-btn {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .next-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .next-btn:active {
+        transform: translateY(0);
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .result-container {
+        text-align: center;
+    }
+
+    .result-score {
+        font-size: 5em;
+        font-weight: bold;
+        color: #667eea;
+        margin: 30px 0;
+    }
+
+    .result-text {
+        font-size: 1.5em;
+        color: #666;
+        margin-bottom: 30px;
+    }
+
+    .result-feedback {
+        background: #f0f4ff;
+        padding: 25px;
+        border-radius: 12px;
+        margin: 30px 0;
+        font-size: 1.2em;
+        line-height: 1.6;
+    }
+
+    .restart-btn {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .restart-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 1.5em;
+        }
+
+        .question {
+            font-size: 1.1em;
+        }
+
+        .result-score {
+            font-size: 3em;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Sálfræðipróf - 100 Spurningar</h1>
+    <div id="quiz-container">
+        <div class="progress-container">
+            <div class="progress-info">
+                <span id="question-number">Spurning 1 af 100</span>
+                <span id="score-display">0 rétt</span>
             </div>
-            <p className="text-2xl text-gray-700">
-              {score} af {questions.length} rétt
-            </p>
-          </div>
-          
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Mat á árangri:</h2>
-            <div className="bg-blue-50 p-4 rounded-lg">
-              {percentage >= 90 && <p className="text-lg">🌟 Frábært! Þú hefur mjög góða þekkingu á efninu!</p>}
-              {percentage >= 75 && percentage < 90 && <p className="text-lg">👍 Vel gert! Þú hefur góða yfirsýn yfir efnið.</p>}
-              {percentage >= 60 && percentage < 75 && <p className="text-lg">💪 Ágætis árangur! Það væri gott að fara yfir efnið aftur.</p>}
-              {percentage < 60 && <p className="text-lg">📚 Þú þarft að læra meira. Farðu vel yfir efnið og reyndu aftur!</p>}
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
             </div>
-          </div>
-
-          <button
-            onClick={resetQuiz}
-            className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2 text-lg font-semibold"
-          >
-            <RefreshCw size={24} />
-            Byrja aftur
-          </button>
         </div>
-      </div>
-    );
-  }
 
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
-  const q = questions[currentQuestion];
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 sm:p-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8">
-          {/* Progress bar */}
-          <div className="mb-6">
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>Spurning {currentQuestion + 1} af {questions.length}</span>
-              <span className="font-semibold">{score} rétt</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
-              <div
-                className="bg-indigo-600 h-3 rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Category */}
-          <div className="mb-4">
-            <span className="inline-block bg-indigo-100 text-indigo-800 text-sm px-3 py-1 rounded-full font-semibold">
-              {q.category}
-            </span>
-          </div>
-
-          {/* Question */}
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6">
-            {q.question}
-          </h2>
-
-          {/* Options */}
-          <div className="space-y-3 mb-6">
-            {q.options.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => handleAnswer(index)}
-                disabled={selectedAnswer !== null}
-                className={`w-full text-left p-4 rounded-lg transition-all ${getButtonClass(index)} ${
-                  selectedAnswer === null ? 'cursor-pointer' : 'cursor-default'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <span className="font-semibold text-gray-700 min-w-[24px]">
-                    {String.fromCharCode(65 + index)}.
-                  </span>
-                  <span className="text-gray-800">{option}</span>
-                  {selectedAnswer !== null && index === q.correct && (
-                    <CheckCircle className="ml-auto text-green-600" size={24} />
-                  )}
-                  {selectedAnswer === index && index !== q.correct && (
-                    <XCircle className="ml-auto text-red-600" size={24} />
-                  )}
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Next button */}
-          {selectedAnswer !== null && (
-            <button
-              onClick={nextQuestion}
-              className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 transition text-lg font-semibold"
-            >
-              {currentQuestion < questions.length - 1 ? 'Næsta spurning' : 'Sjá niðurstöður'}
-            </button>
-          )}
-        </div>
-      </div>
+        <div class="category" id="category"></div>
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+        <button class="next-btn hidden" id="next-btn">Næsta spurning</button>
     </div>
-  );
-};
 
-export default QuizApp;
+    <div id="result-container" class="result-container hidden">
+        <h1>🎉 Niðurstöður</h1>
+        <div class="result-score" id="final-score"></div>
+        <div class="result-text" id="final-text"></div>
+        <div class="result-feedback" id="feedback"></div>
+        <button class="restart-btn" onclick="restartQuiz()">🔄 Byrja aftur</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { id: 1, category: "5. kafli - Minnið", question: "Hvað er knippi (chunk) í minni?", options: ["Þegar upplýsingar eru settar saman þannig að hvert atriði innihaldi meiri upplýsingar", "Þegar upplýsingar eru aðskildar í minni", "Þegar upplýsingar glatast", "Þegar upplýsingar endurtaka sig"], correct: 0 },
+        { id: 2, category: "5. kafli - Minnið", question: "Er hægt að fjölga atriðum í skammtímaminni?", options: ["Já, auðveldlega", "Nei, en við getum stækkað þau með knippi", "Já, með þjálfun", "Nei, aldrei"], correct: 1 },
+        { id: 3, category: "5. kafli - Minnið", question: "Á hvaða formi eru upplýsingar skráðar í skynminni?", options: ["Alltaf á sjónrænu formi", "Á sama formi og þær berast", "Alltaf sem hljóð", "Sem lykt"], correct: 1 },
+        { id: 4, category: "5. kafli - Minnið", question: "Hvað þurrkar út fyrri upplýsingar í skynminni?", options: ["Tími", "Gleymska", "Nýjar upplýsingar á sama formi", "Streita"], correct: 2 },
+        { id: 5, category: "5. kafli - Minnið", question: "Hvað þýðir orðið 'Hagurbal'?", options: ["Gaman", "Andúð, óbeit, ógeð", "Gleði", "Hamingja"], correct: 1 },
+        { id: 6, category: "5. kafli - Minnið", question: "Af hverju er erfitt að muna orðið 'Hagurbal'?", options: ["Það er of langt", "Það er nánast útdautt, aldrei notað, ótengt öðrum og nánast enginn skilur það", "Það er á erlendu máli", "Það er of stutt"], correct: 1 },
+        { id: 7, category: "5. kafli - Minnið", question: "Hvað er ástandsbendi?", options: ["Þegar aðstæður hjálpa við minnisvinnslu", "Þegar tilfinningalegt ástand hjálpar við að rifja upp minningar í samræmi við skap okkar", "Þegar tími hjálpar við minnisvinnslu", "Þegar lykt hjálpar við minnisvinnslu"], correct: 1 },
+        { id: 8, category: "5. kafli - Minnið", question: "Hvað er aðstæðubendi?", options: ["Þegar tilfinningar hjálpa við minnisvinnslu", "Þegar aðstæður eða umhverfi hjálpa við að rifja upp minningar", "Þegar tími hjálpar við minnisvinnslu", "Þegar hljóð hjálpar við minnisvinnslu"], correct: 1 },
+        { id: 9, category: "5. kafli - Minnið", question: "Hvað er afturvirk hömlun (retroactive interference)?", options: ["Truflun á upprifjun á því sem við kunnum", "Truflun á skráningu á nýju efni", "Þegar við munum allt", "Þegar við gleyma öllu"], correct: 0 },
+        { id: 10, category: "5. kafli - Minnið", question: "Hvað er dæmi um afturvirka hömlun?", options: ["Að læra nýja leið í skólann", "Tungubroddsfyrirbrigðið - þegar við gleymum einhverju á prófi en vitum það samt eftir prófið", "Að muna allt", "Að gleyma öllu"], correct: 1 },
+        { id: 11, category: "5. kafli - Minnið", question: "Hvað er framvirk hömlun (proactive interference)?", options: ["Truflun á upprifjun á því sem við kunnum", "Truflun á skráningu á nýju efni", "Þegar við munum allt", "Þegar við gleyma öllu"], correct: 1 },
+        { id: 12, category: "5. kafli - Minnið", question: "Hvað er dæmi um framvirka hömlun?", options: ["Tungubroddsfyrirbrigðið", "Fara óvart alltaf gömlu leiðina í skólann þótt þú vitir að þú komist aðra", "Að muna allt", "Að gleyma öllu"], correct: 1 },
+        { id: 13, category: "5. kafli - Minnið", question: "Hvernig getum við notfært okkur þekkingu á afturvirkri hömlun?", options: ["Með því að læra allt í einu", "Með því að aðgreina nýtt efni frá því sem þú kannt fyrir til að geta betur munað það", "Með því að læra ekkert", "Með því að sofa"], correct: 1 },
+        { id: 14, category: "5. kafli - Minnið", question: "Hvað er leifturminni (flashbulb memory)?", options: ["Venjuleg minning", "Sérstaklega skýr, nákvæm og langvarandi minning um atburð sem var óvenjulega mikilvægur, tilfinningaþrunginn, óvæntur og fyrirvaralaus", "Óskýr minning", "Stutt minning"], correct: 1 },
+        { id: 15, category: "5. kafli - Minnið", question: "Hvernig hafa tilfinningar áhrif á minni?", options: ["Við munum betur efni sem er í samræmi við skap okkar", "Tilfinningar hafa engin áhrif á minni", "Við munum verr þegar við erum glöð", "Við munum alltaf jafn vel"], correct: 0 },
+        { id: 16, category: "5. kafli - Minnið", question: "Hvað gerist þegar þunglyndir reyna að rifja upp minningar?", options: ["Þeir muna bara gleðilegar minningar", "Þeir hafa tilhneigingu til að rifja upp neikvæða atburði", "Þeir muna ekkert", "Þeir muna allt"], correct: 1 },
+        { id: 17, category: "5. kafli - Minnið", question: "Hver er fyrsta minnisaðferðin sem mælt er með?", options: ["Læra á síðustu stundu", "Reyndu að finna leið til að vekja áhuga þinn á efninu", "Læra allt utanbókar", "Horfa bara á myndir"], correct: 1 },
+        { id: 18, category: "5. kafli - Minnið", question: "Hvernig getum við tengt efni við áhugamál?", options: ["Með því að hunsa áhugamálin", "Með því að tengja efni við áhugamál eða hugsa hlutina út frá þeim sviðum sem okkur þykja skemmtileg", "Með því að læra bara utanbókar", "Með því að gleyma áhugamálunum"], correct: 1 },
+        { id: 19, category: "5. kafli - Minnið", question: "Hvað er frumhrif?", options: ["Þegar við munum miðjan hluta upplýsinga", "Þegar við munum fyrstu upplýsingarnar betur", "Þegar við munum ekkert", "Þegar við gleyma öllu"], correct: 1 },
+        { id: 20, category: "5. kafli - Minnið", question: "Hvað er nándarhrif?", options: ["Þegar við munum miðjan hluta upplýsinga", "Þegar við munum síðustu upplýsingarnar betur", "Þegar við munum ekkert", "Þegar við gleyma öllu"], correct: 1 },
+        { id: 21, category: "6. kafli - Rannsóknir", question: "Hvað er frumbreyta (independent variable)?", options: ["Það sem við mælum", "Eitthvað sem við viljum stjórna, eða skipta í hópa eftir", "Niðurstaða rannsóknar", "Slembiúrtak"], correct: 1 },
+        { id: 22, category: "6. kafli - Rannsóknir", question: "Hvað er fylgibreyta (dependent variable)?", options: ["Það sem við stjórnum", "Það sem við mælum, niðurstaðan", "Úrtakið", "Tilgátan"], correct: 1 },
+        { id: 23, category: "6. kafli - Rannsóknir", question: "Í rannsókninni 'Hefur hreyfing áhrif á heilsu fólks?' - hvað er frumbreytan?", options: ["Heilsa", "Hreyfing", "Fólkið", "Tíminn"], correct: 1 },
+        { id: 24, category: "6. kafli - Rannsóknir", question: "Í rannsókninni 'Hefur hreyfing áhrif á heilsu fólks?' - hvað er fylgibreytan?", options: ["Heilsa", "Hreyfing", "Fólkið", "Tíminn"], correct: 0 },
+        { id: 25, category: "6. kafli - Rannsóknir", question: "Hvað er tilraunahópur?", options: ["Hópur sem fær ekki inngrip", "Hópur sem fær inngrip", "Allir þátttakendur", "Rannsakendurnir"], correct: 1 },
+        { id: 26, category: "6. kafli - Rannsóknir", question: "Hvað er samanburðarhópur?", options: ["Hópur sem fær inngrip", "Hópur sem fær ekki inngrip (til samanburðar)", "Allir þátttakendur", "Rannsakendurnir"], correct: 1 },
+        { id: 27, category: "6. kafli - Rannsóknir", question: "Hver er ein algengasta rannsóknaraðferðin í sálfræði í dag?", options: ["Tilraunir", "Vettvangsathuganir", "Kannanir (surveys)", "Einsögur"], correct: 2 },
+        { id: 28, category: "6. kafli - Rannsóknir", question: "Hvað eru kannanir notaðar til?", options: ["Til að framkvæma tilraunir", "Til að leggja spurningarkannanir fyrir þátttakendur", "Til að skoða dýr", "Til að lesa bækur"], correct: 1 },
+        { id: 29, category: "6. kafli - Rannsóknir", question: "Hversu margar helstu rannsóknaraðferðir eru í sálfræði?", options: ["Þrjár", "Fjórar", "Fimm", "Sex"], correct: 2 },
+        { id: 30, category: "6. kafli - Rannsóknir", question: "Hvað eru fimm helstu rannsóknaraðferðirnar?", options: ["Tilraunir, vettvangsathuganir, einsögur, kannanir, fylgnirannsóknir", "Bara tilraunir", "Bara kannanir", "Bara vettvangsathuganir"], correct: 0 },
+        { id: 31, category: "6. kafli - Rannsóknir", question: "Hvað er lyfleysuáhrif (placebo effect)?", options: ["Þegar lyf virka ekki", "Þegar fólk upplifir áhrif af lyfjum sem það heldur að það taki þótt það sé að taka sykurpillu", "Þegar lyf virka alltaf", "Þegar enginn tekur lyf"], correct: 1 },
+        { id: 32, category: "6. kafli - Rannsóknir", question: "Hvað er blind rannsókn (blind experiment)?", options: ["Rannsókn þar sem allir vita allt", "Rannsókn þar sem þátttakendur vita ekki hvað er verið að mæla", "Rannsókn þar sem enginn veit neitt", "Rannsókn þar sem bara rannsakendur vita allt"], correct: 1 },
+        { id: 33, category: "6. kafli - Rannsóknir", question: "Hvað er Hawthorne-áhrif?", options: ["Fólk breytir ekki hegðun sinni", "Fólk breytir hegðun sinni við það eitt að það er verið að fylgjast með því", "Fólk hættir að hegða sér", "Fólk verður óbreytanlegt"], correct: 1 },
+        { id: 34, category: "6. kafli - Rannsóknir", question: "Hvað er dæmi um Hawthorne-áhrif?", options: ["Þegar börn breyta hegðun þegar gestir koma", "Þegar börn sofa", "Þegar börn éta", "Þegar börn eru ein"], correct: 0 },
+        { id: 35, category: "6. kafli - Rannsóknir", question: "Hvað er tölfræði notuð til í sálfræði?", options: ["Bara til að telja", "Til að taka saman gögn, bera saman hópa, ákvarða tengsl og spá fyrir um hegðun", "Bara til að gera próf", "Ekkert"], correct: 1 },
+        { id: 36, category: "6. kafli - Rannsóknir", question: "Hvað er lýsandi tölfræði?", options: ["Tölfræði sem lýsir bara einum hlut", "Tölfræði sem birtir okkur gögn á sjónrænan hátt sem við eigum auðveldara með að skilja", "Tölfræði sem segir okkur ekkert", "Tölfræði sem er bara í ritgerðum"], correct: 1 },
+        { id: 37, category: "6. kafli - Rannsóknir", question: "Hvað er ályktunartölfræði?", options: ["Tölfræði sem segir okkur bara hluti", "Tölfræði sem hjálpar okkur að draga ályktanir um þýði út frá úrtaki", "Tölfræði sem er alltaf röng", "Tölfræði sem enginn notar"], correct: 1 },
+        { id: 38, category: "6. kafli - Rannsóknir", question: "Hvað er meðaltal í tölfræði?", options: ["Hæsta gildið", "Lægsta gildið", "Summan af öllum gildum deilt með fjölda gilda", "Miðgildið"], correct: 2 },
+        { id: 39, category: "6. kafli - Rannsóknir", question: "Hvað er staðalfrávik?", options: ["Mælikvarði á dreifingu gagna frá meðaltali", "Meðaltalið", "Hæsta gildið", "Lægsta gildið"], correct: 0 },
+        { id: 40, category: "6. kafli - Rannsóknir", question: "Hvað segir normalkúrfa okkur?", options: ["Ekkert", "Hvernig gögn dreifast í kringum meðaltal", "Bara hæsta gildið", "Bara lægsta gildið"], correct: 1 },
+        { id: 41, category: "6. kafli - Rannsóknir", question: "Ef þú tekur próf og færð 7,5 og meðaltal er 7,0 með staðalfrávik 0,5, hvar ertu?", options: ["Langt undir meðaltali", "Rétt yfir meðaltali", "Langt yfir meðaltali", "Á meðaltali"], correct: 1 },
+        { id: 42, category: "6. kafli - Rannsóknir", question: "Hvað er marktektarpróf?", options: ["Próf sem nemendur taka", "Tölfræðilegt próf sem skoðar hvort munur milli hópa sé raunverulegur eða tilviljun", "Próf sem segir okkur ekkert", "Próf sem allir falla á"], correct: 1 },
+        { id: 43, category: "6. kafli - Rannsóknir", question: "Hvað þýðir það að niðurstaða sé 'marktæk'?", options: ["Að niðurstaðan sé tilviljun", "Að niðurstaðan sé raunveruleg og ekki bara tilviljun", "Að niðurstaðan skipti ekki máli", "Að niðurstaðan sé röng"], correct: 1 },
+        { id: 44, category: "6. kafli - Rannsóknir", question: "Hvað er blekkingaaðferð (deception) í rannsóknum?", options: ["Þegar þátttakendur vita allt", "Þegar þátttakendur eru ekki sagðar allar upplýsingar um rannsóknina fyrirfram", "Þegar allir segja satt", "Þegar enginn lygar"], correct: 1 },
+        { id: 45, category: "6. kafli - Rannsóknir", question: "Hvað er ritrýning (peer review)?", options: ["Þegar vinir lesa rannsókn", "Þegar sérfræðingar í faginu fara yfir rannsókn áður en hún er birt", "Þegar enginn les rannsóknina", "Þegar allir lesa rannsóknina"], correct: 1 },
+        { id: 46, category: "6. kafli - Rannsóknir", question: "Hvers vegna er ritrýning mikilvæg?", options: ["Til að gera rannsóknina lengri", "Til að fullvissa rannsakanda og lesendur að rannsóknin sé rétt gerð", "Til að tefja rannsóknina", "Til að gera rannsóknina skemmtilegri"], correct: 1 },
+        { id: 47, category: "6. kafli - Rannsóknir", question: "Hvað eru fimm atriðin í mati á rannsókn?", options: ["Tilgangur, aðferð, þátttakendur, endurtekning, ályktanir", "Bara tilgangur", "Bara niðurstöður", "Bara þátttakendur"], correct: 0 },
+        { id: 48, category: "6. kafli - Rannsóknir", question: "Af hverju er mikilvægt að skoða aðferð rannsóknar?", options: ["Til að vita hvort rannsóknin hafi verið rétt framkvæmd", "Bara til að vita hver gerði hana", "Til að vita hvað kostnaði", "Til að vita hvar hún var gerð"], correct: 0 },
+        { id: 49, category: "6. kafli - Rannsóknir", question: "Af hverju skiptir endurtekning máli í rannsóknum?", options: ["Til að vita hvort niðurstöður séu áreiðanlegar", "Bara til að eyða tíma", "Til að gera rannsóknina dýrari", "Til að gera rannsóknina lengri"], correct: 0 },
+        { id: 50, category: "6. kafli - Rannsóknir", question: "Hvar færð þú upplýsingar þínar um vísindarannsóknir?", options: ["Alltaf beint úr vísindagreinum", "Oft af frétta- eða samfélagsmiðlum", "Aldrei", "Alltaf frá kennurum"], correct: 1 },
+        { id: 51, category: "6. kafli - Rannsóknir", question: "Hver velur hvaða upplýsingar þú sérð á fréttamiðlum?", options: ["Þú velur alltaf sjálf/ur", "Ritstjórar og blaðamenn velja hvað birtist", "Enginn velur", "Allir velja"], correct: 1 },
+        { id: 52, category: "6. kafli - Rannsóknir", question: "Er alltaf rétt sagt frá rannsóknum á fréttamiðlum?", options: ["Já, alltaf", "Nei, stundum er rannsóknunum breytt eða of einfölduð", "Alltaf rangt", "Aldrei rangt"], correct: 1 },
+        { id: 53, category: "7. kafli - Félagssálfræði", question: "Í hvað má skipta viðfangsefnum sálfræðinnar gróflega?", options: ["Hegðun, hugsun, tilfinningar, sjálfsmynd", "Bara hegðun", "Bara tilfinningar", "Bara sjálfsmynd"], correct: 0 },
+        { id: 54, category: "7. kafli - Félagssálfræði", question: "Hvað má segja að sjálfsmyndin sé?", options: ["Bara hegðun", "Sambland af hegðun, hugsun og tilfinningum", "Bara tilfinningar", "Bara hugsun"], correct: 1 },
+        { id: 55, category: "7. kafli - Félagssálfræði", question: "Hvað er félagslegur samanburður?", options: ["Þegar við berum okkur saman við aðra", "Þegar við berum okkur aldrei saman", "Þegar við hugsum bara um okkur sjálf", "Þegar við hugsum aldrei um aðra"], correct: 0 },
+        { id: 56, category: "7. kafli - Félagssálfræði", question: "Er félagslegur samanburður algildur?", options: ["Nei, bara á Íslandi", "Já, við eigum öll líka til að bera okkur saman við þá sem gengur vel til að lyfta okkur upp", "Nei, aldrei", "Bara hjá fullorðnum"], correct: 1 },
+        { id: 57, category: "7. kafli - Félagssálfræði", question: "Hvenær byrja börn að bera sig saman við aðra?", options: ["Aldrei", "Eftir sýndarnáminu/félagsnámi Bandura", "Bara fullorðin", "Eftir 20 ára aldur"], correct: 1 },
+        { id: 58, category: "Ýmislegt", question: "Hvað er knippi í sálfræði?", options: ["Þegar upplýsingar eru sameinaðar í stærri einingar", "Þegar upplýsingar eru aðskildar", "Þegar upplýsingar glatast", "Þegar upplýsingar eru óskýrar"], correct: 0 },
+        { id: 59, category: "Ýmislegt", question: "Hvernig getum við aðgrennt nýtt efni til að muna betur?", options: ["Með því að læra allt eins", "Með því að nota mismunandi liti, teikna myndir eða læra á mismunandi hátt", "Með því að læra ekkert", "Með því að gleyma gömlu efni"], correct: 1 },
+        { id: 60, category: "Ýmislegt", question: "Hvað er ágætt dæmi um notkun aðstæðubenda?", options: ["Að fara aftur í herbergið sem þú varst í til að rifja upp hvað þú ættir að gera", "Að vera alltaf á sama stað", "Að gleyma öllu", "Að læra aldrei"], correct: 0 },
+        { id: 61, category: "Ýmislegt", question: "Hvað skiptir máli í minnisaðferðum?", options: ["Að finna leið til að vekja áhuga þinn á efninu", "Að læra bara utanbókar", "Að læra aldrei", "Að gleyma öllu"], correct: 0 },
+        { id: 62, category: "Ýmislegt", question: "Hvað er mikilvægt þegar við lærum atferlisfræði?", options: ["Að læra bara utanbókar", "Að tengja efnið við áhugamál okkar, t.d. þjálfun hunda", "Að læra aldrei", "Að gleyma öllu"], correct: 1 },
+        { id: 63, category: "Ýmislegt", question: "Hvað gerist ef við hlustum á fyrirlestur en erum að skrolla í gegnum Instagram?", options: ["Við munum betur", "Afturvirk hömlun - það sem við lesum í símanum hamlar skráningu á því sem kennarinn sagði", "Við munum allt", "Ekkert gerist"], correct: 1 },
+        { id: 64, category: "Ýmislegt", question: "Hvað þýðir það að þunglyndir hafi tilhneigingu til að rifja upp neikvæða atburði?", options: ["Það er dæmi um ástandsbenda", "Það er dæmi um aðstæðubenda", "Það er engin tenging", "Það er óeðlilegt"], correct: 0 },
+        { id: 65, category: "Ýmislegt", question: "Hvað er dæmi um lýðfræðilegar frumbreytur?", options: ["Tónlist, lit, bragð", "Kyn, búseta, kynþáttur, menntun, staða á vinnumarkaði", "Veður, tími, dagur", "Lykt, hljóð, snerting"], correct: 1 },
+        { id: 66, category: "Ýmislegt", question: "Í rannsókninni 'Hefur tónlist truflandi áhrif á lesskilning barna?' - hvað er frumbreytan?", options: ["Lesskilningur", "Tónlist (hár tónlist eða engin tónlist)", "Börnin", "Tíminn"], correct: 1 },
+        { id: 67, category: "Ýmislegt", question: "Í rannsókninni 'Er hamingja mismunandi eftir kynjum?' - hvað er frumbreytan?", options: ["Hamingja", "Kyn", "Fólkið", "Tíminn"], correct: 1 },
+        { id: 68, category: "Ýmislegt", question: "Í rannsókninni 'Hefur hugræn atferlismeðferð áhrif á prófkvíða?' - hvað er fylgibreytan?", options: ["Hugræn atferlismeðferð", "Prófkvíði", "Nemendurnir", "Tíminn"], correct: 1 },
+        { id: 69, category: "Ýmislegt", question: "Hvað gerist í tilgátunni 'líkamsrækt bætir geðheilsu'?", options: ["Líkamsrækt er fylgibreytan", "Líkamsrækt er frumbreytan og geðheilsa er fylgibreytan", "Geðheilsa er frumbreytan", "Það eru engar breytur"], correct: 1 },
+        { id: 70, category: "Ýmislegt", question: "Hvað er úrtak í rannsókn?", options: ["Allir sem eru til", "Hópur einstaklinga sem tekin eru úr stærra þýði", "Bara einn einstaklingur", "Rannsakendurnir"], correct: 1 },
+        { id: 71, category: "Ýmislegt", question: "Hvað er þýði í rannsókn?", options: ["Bara úrtakið", "Allir einstaklingarnir sem rannsóknin á við um", "Bara rannsakendurnir", "Bara einn hópur"], correct: 1 },
+        { id: 72, category: "Ýmislegt", question: "Hvað eru eigindlegar rannsóknir?", options: ["Rannsóknir sem nota bara tölur", "Rannsóknir sem nota orð, lýsingar og dýpra skilning", "Rannsóknir sem nota bara myndir", "Rannsóknir sem nota engar upplýsingar"], correct: 1 },
+        { id: 73, category: "Ýmislegt", question: "Hvað eru megindlegar rannsóknir?", options: ["Rannsóknir sem nota bara orð", "Rannsóknir sem nota tölur og tölfræði", "Rannsóknir sem nota bara myndir", "Rannsóknir sem nota engar upplýsingar"], correct: 1 },
+        { id: 74, category: "Ýmislegt", question: "Hvað er kenning í vísindum?", options: ["Sama og tilgáta", "Skýring á fyrirbærum sem er studd af mörgum rannsóknum", "Bara ágiskun", "Alltaf röng"], correct: 1 },
+        { id: 75, category: "Ýmislegt", question: "Hvað er tilgáta í vísindum?", options: ["Sama og kenning", "Tilraun til að spá fyrir um niðurstöður rannsóknar", "Alltaf sönn", "Alltaf röng"], correct: 1 },
+        { id: 76, category: "Ýmislegt", question: "Hvað þarf að gera til að staðfesta kenningar?", options: ["Bara eina rannsókn", "Margar rannsóknir sem styðja sömu niðurstöðu", "Engar rannsóknir", "Bara að hugsa um það"], correct: 1 },
+        { id: 77, category: "Ýmislegt", question: "Hvað er vettvangsathugun?", options: ["Að skoða í rannsóknarstofu", "Að skoða hegðun í náttúrulegu umhverfi", "Að lesa um það", "Að hugsa um það"], correct: 1 },
+        { id: 78, category: "Ýmislegt", question: "Hvað er einsaga í rannsóknum?", options: ["Rannsókn á mörgum einstaklingum", "Ítarleg rannsókn á einum einstaklingi", "Rannsókn á dýrum", "Rannsókn á bókum"], correct: 1 },
+        { id: 79, category: "Ýmislegt", question: "Hvað er fylgnirannsókn?", options: ["Rannsókn sem skoðar hvort tvær breytur séu tengdar", "Rannsókn sem skoðar bara eina breytu", "Rannsókn sem skoðar engar breytur", "Rannsókn sem skoðar bara tíma"], correct: 0 },
+        { id: 80, category: "Ýmislegt", question: "Þýðir fylgni orsakasamband?", options: ["Já, alltaf", "Nei, fylgni þýðir ekki endilega orsakasamband", "Stundum", "Aldrei"], correct: 1 },
+        { id: 81, category: "Ýmislegt", question: "Hvað er best til að sýna orsakasamband?", options: ["Fylgnirannsókn", "Tilraun með tilraunahóp og samanburðarhóp", "Vettvangsathugun", "Einsaga"], correct: 1 },
+        { id: 82, category: "Ýmislegt", question: "Hvað þýðir vísindaleg aðferð?", options: ["Að gera rannsóknir á handahófskenndan hátt", "Kerfisbundin aðferð til að afla þekkingar með athugun og tilraunum", "Að giska bara", "Að lesa bara bækur"], correct: 1 },
+        { id: 83, category: "Ýmislegt", question: "Hvað er skimunarkanna?", options: ["Kanna sem skoðar allt", "Kanna til að greina áhættuþætti eða vandamál", "Kanna sem skoðar ekkert", "Kanna sem er alltaf röng"], correct: 1 },
+        { id: 84, category: "Ýmislegt", question: "Hvað þarf að vera til staðar í blindri rannsókn?", options: ["Að allir vita allt", "Að þátttakendur viti ekki hvort þeir eru í tilraunahóp eða samanburðarhóp", "Að enginn viti neitt", "Að bara rannsakendur viti allt"], correct: 1 },
+        { id: 85, category: "Ýmislegt", question: "Hvað er best að gera til að komast hjá Hawthorne-áhrifum?", options: ["Segja öllum að þeir séu skoðaðir", "Reyna að framkvæma rannsóknina þannig að þátttakendur viti ekki að þeir eru skoðaðir", "Fylgjast alltaf með öllum", "Aldrei fylgjast með neinum"], correct: 1 },
+        { id: 86, category: "Ýmislegt", question: "Hvað segir lítið staðalfrávik okkur?", options: ["Að gögnin séu mjög dreifð", "Að gögnin séu nálægt meðaltalinu", "Að gögnin séu öll eins", "Að gögnin séu öll mismunandi"], correct: 1 },
+        { id: 87, category: "Ýmislegt", question: "Hvað segir stórt staðalfrávik okkur?", options: ["Að gögnin séu nálægt meðaltalinu", "Að gögnin séu mjög dreifð frá meðaltalinu", "Að gögnin séu öll eins", "Að gögnin séu lítil"], correct: 1 },
+        { id: 88, category: "Ýmislegt", question: "Hvað er hægt að nota til að sjá dreifingu gagna?", options: ["Bara tölur", "Normalkúrvu eða súlurit", "Bara orð", "Engin tæki"], correct: 1 },
+        { id: 89, category: "Ýmislegt", question: "Hvað þarf að gera áður en rannsókn er birt?", options: ["Ekkert", "Ritrýning hjá sérfræðingum", "Bara að skrifa hana", "Bara að hugsa um hana"], correct: 1 },
+        { id: 90, category: "Ýmislegt", question: "Hvað er markmið ritrýningar?", options: ["Að gera rannsóknina lengri", "Að tryggja að rannsóknin uppfylli allar kröfur og sé rétt gerð", "Að tefja útgáfu", "Að gera rannsóknina dýrari"], correct: 1 },
+        { id: 91, category: "Ýmislegt", question: "Hvað eru dýrarannsóknir?", options: ["Rannsóknir á fólki", "Rannsóknir á dýrum til að skilja hegðun og lífeðlisfræði", "Rannsóknir á plöntum", "Rangsóknir á steinum"], correct: 1 },
+        { id: 92, category: "Ýmislegt", question: "Hvað er eitt stærsta siðferðislega álitamálið í sálfræði?", options: ["Að segja alltaf satt", "Notkun blekkinga og dýrarannsóknir", "Að borga vel", "Að nota tölvur"], correct: 1 },
+        { id: 93, category: "Ýmislegt", question: "Hvað þarf að gera eftir að búið er að nota blekkingu í rannsókn?", options: ["Ekkert", "Skýra þátttakendum hvað var verið að rannsaka og af hverju blekking var nauðsynleg", "Halda leyndum", "Segja öllum"], correct: 1 },
+        { id: 94, category: "Ýmislegt", question: "Hvað er ályktun í rannsókn?", options: ["Upphafið", "Niðurstaðan sem rannsakendur draga úr gögnunum", "Tilgátan", "Aðferðin"], correct: 1 },
+        { id: 95, category: "Ýmislegt", question: "Þarf alltaf að geta endurtekið rannsókn?", options: ["Nei, aldrei", "Já, til að staðfesta að niðurstöðurnar séu áreiðanlegar", "Stundum", "Bara ef okkur hentar"], correct: 1 },
+        { id: 96, category: "Ýmislegt", question: "Hvað þýðir það ef rannsókn er ekki endurtekjanleg?", options: ["Að hún sé fullkomin", "Að niðurstöðurnar séu ekki áreiðanlegar", "Að hún sé alltaf sönn", "Að hún skipti ekki máli"], correct: 1 },
+        { id: 97, category: "Ýmislegt", question: "Hvað er mikilvægt þegar við lesum um rannsókn í fjölmiðlum?", options: ["Að trúa öllu", "Að vera gagnrýnir og athuga hvort rétt sé sagt frá rannsókninni", "Að trúa engu", "Að hunsa allt"], correct: 1 },
+        { id: 98, category: "Ýmislegt", question: "Hvað ætti að athuga þegar maður les um rannsókn?", options: ["Bara titilinn", "Tilgang, aðferð, þátttakendur, endurtekningar og ályktanir", "Bara niðurstöðurnar", "Ekkert"], correct: 1 },
+        { id: 99, category: "Ýmislegt", question: "Hvers vegna er tölfræði mikilvæg í sálfræði?", options: ["Til að gera rannsóknir erfiðari", "Til að geta greint gögn, borið saman hópa og dregið áreiðanlegar ályktanir", "Til að rugla fólk", "Til að gera rannsóknir dýrari"], correct: 1 },
+        { id: 100, category: "Ýmislegt", question: "Hvað er helsti munurinn á kenningum og tilgátum?", options: ["Engin munur", "Kenningar eru studdar af mörgum rannsóknum en tilgátur eru tilraunir til að spá fyrir um niðurstöður", "Kenningar eru alltaf rangar", "Tilgátur eru alltaf sannar"], correct: 1 }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedAnswer = null;
+
+    function loadQuestion() {
+        const q = questions[currentQuestion];
+        document.getElementById('category').textContent = q.category;
+        document.getElementById('question').textContent = q.question;
+        document.getElementById('question-number').textContent = `Spurning ${currentQuestion + 1} af ${questions.length}`;
+        document.getElementById('score-display').textContent = `${score} rétt`;
+        
+        const progress = ((currentQuestion + 1) / questions.length) * 100;
+        document.getElementById('progress-fill').style.width = progress + '%';
+
+        const optionsContainer = document.getElementById('options');
+        optionsContainer.innerHTML = '';
+
+        q.options.forEach((option, index) => {
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option';
+            optionDiv.innerHTML = `
+                <span class="option-letter">${String.fromCharCode(65 + index)}.</span>
+                <span class="option-text">${option}</span>
+                <span class="icon"></span>
+            `;
+            optionDiv.onclick = () => selectAnswer(index);
+            optionsContainer.appendChild(optionDiv);
+        });
+
+        document.getElementById('next-btn').classList.add('hidden');
+        selectedAnswer = null;
+    }
+
+    function selectAnswer(index) {
+        if (selectedAnswer !== null) return;
+
+        selectedAnswer = index;
+        const q = questions[currentQuestion];
+        const options = document.querySelectorAll('.option');
+
+        options.forEach(opt => opt.classList.add('disabled'));
+
+        if (index === q.correct) {
+            options[index].classList.add('selected-correct');
+            options[index].querySelector('.icon').textContent = '✓';
+            score++;
+        } else {
+            options[index].classList.add('selected-wrong');
+            options[index].querySelector('.icon').textContent = '✗';
+            options[q.correct].classList.add('correct-answer');
+            options[q.correct].querySelector('.icon').textContent = '✓';
+        }
+
+        document.getElementById('score-display').textContent = `${score} rétt`;
+        document.getElementById('next-btn').classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+        if (currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        document.getElementById('quiz-container').classList.add('hidden');
+        document.getElementById('result-container').classList.remove('hidden');
+
+        const percentage = ((score / questions.length) * 100).toFixed(1);
+        document.getElementById('final-score').textContent = percentage + '%';
+        document.getElementById('final-text').textContent = `${score} af ${questions.length} rétt`;
+
+        let feedback = '';
+        if (percentage >= 90) {
+            feedback = '🌟 Frábært! Þú hefur mjög góða þekkingu á efninu!';
+        } else if (percentage >= 75) {
+            feedback = '👍 Vel gert! Þú hefur góða yfirsýn yfir efnið.';
+        } else if (percentage >= 60) {
+            feedback = '💪 Ágætis árangur! Það væri gott að fara yfir efnið aftur.';
+        } else {
+            feedback = '📚 Þú þarft að læra meira. Farðu vel yfir efnið og reyndu aftur!';
+        }
+
+        document.getElementById('feedback').textContent = feedback;
+    }
+
+    function restartQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        selectedAnswer = null;
+        document.getElementById('quiz-container').classList.remove('hidden');
+        document.getElementById('result-container').classList.add('hidden');
+        loadQuestion();
+    }
+
+    document.getElementById('next-btn').onclick = nextQuestion;
+    loadQuestion();
+</script>
+</body>
+</html>
